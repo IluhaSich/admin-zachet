@@ -1,79 +1,26 @@
 pipeline {
-    agent any
-
-    environment {
-        COMPOSE_CMD = 'docker compose'
+    agent {
+        docker {
+            image 'docker:27.1-dind'
+            args '-v /var/run/docker.sock:/var/run/docker.sock --privileged'
+        }
     }
 
     stages {
-
-        stage('Checkout') {
+        stage('Setup') {
             steps {
-                echo 'Checkout source code'
-                checkout scm
+                sh 'chmod +x gradlew gradlew.bat docker-compose*'
             }
         }
-
-        stage('Build Images') {
+        stage('build') {
             steps {
-                echo 'Building Docker images'
-                sh '''
-                    ${COMPOSE_CMD} build tea-service prometheus grafana
-                '''
+                sh 'docker-compose build --progress=plain'
             }
         }
-
-        stage('Stop Old Containers') {
+        stage('deploy') {
             steps {
-                echo 'Stopping old containers'
-                sh '''
-                    ${COMPOSE_CMD} stop tea-service prometheus grafana || true
-                    ${COMPOSE_CMD} rm -f tea-service prometheus grafana || true
-                '''
+                sh 'docker-compose up -d'
             }
-        }
-
-        stage('Start Services') {
-            steps {
-                echo 'Starting services'
-                sh '''
-                    ${COMPOSE_CMD} up -d tea-service prometheus grafana
-                '''
-            }
-        }
-
-        stage('Health Check') {
-            steps {
-                echo 'Waiting for application health'
-                sh '''
-                    for i in {1..10}; do
-                        if curl -sf http://localhost:8089/actuator/health > /dev/null; then
-                            echo "Tea-service is UP"
-                            exit 0
-                        fi
-                        echo "Waiting..."
-                        sleep 3
-                    done
-                    echo "Tea-service did not start"
-                    exit 1
-                '''
-            }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline finished successfully'
-            echo 'Tea-service: http://localhost:8089'
-            echo 'Prometheus: http://localhost:9090'
-            echo 'Grafana: http://localhost:3000'
-        }
-        failure {
-            echo 'Pipeline failed'
-            sh '${COMPOSE_CMD} logs'
-        }
-        always {
-            sh '${COMPOSE_CMD} ps'
         }
     }
 }

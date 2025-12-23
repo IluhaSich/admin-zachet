@@ -1,0 +1,5 @@
+https://github.com/IluhaSich/admin-zachet
+
+http://localhost:8089/swagger-ui/index.html
+
+/var/jenkins_home/secrets/initialAdminPassword

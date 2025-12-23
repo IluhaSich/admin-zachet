@@ -1,0 +1,4 @@
+workflow-aggregator
+git
+generic-webhook-trigger
+docker-workflow

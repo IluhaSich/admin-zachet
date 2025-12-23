@@ -6,7 +6,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: tea-service
     ports:
       - "8089:8089"
     environment:
@@ -21,26 +20,15 @@ services:
       start_period: 40s
 
   prometheus:
-    image: prom/prometheus:latest
-    container_name: prometheus
+    build: ./prometheus
     ports:
       - "9090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - prometheus-data:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=200h'
     networks:
       - monitoring-network
-    restart: unless-stopped
-    depends_on:
-      - tea-service
+
 
   grafana:
     image: grafana/grafana:latest
-    container_name: grafana
     ports:
       - "3000:3000"
     environment:
@@ -57,23 +45,22 @@ services:
       - prometheus
     restart: unless-stopped
 
-  jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
-    ports:
-      - "8081:8080"
-      - "50000:50000"
-    environment:
-      - JENKINS_OPTS=--httpPort=8080
-    volumes:
-      - jenkins-data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - .:/workspace
-    networks:
-      - monitoring-network
-    user: root
-    restart: unless-stopped
-
+#  jenkins:
+#    build:
+#      context: ./jenkins
+#    ports:
+#      - "8081:8080"
+#      - "50000:50000"
+#    volumes:
+#      - jenkins-data:/var/jenkins_home
+#      - /var/run/docker.sock:/var/run/docker.sock
+#      - .:/workspace
+#    networks:
+#      - monitoring-network
+#    user: root
+#    restart: unless-stopped
+#
+#
 
 
 volumes:

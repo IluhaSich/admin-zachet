@@ -46,13 +46,13 @@ pipeline {
             steps {
                 echo 'Waiting for application health'
                 sh '''
-                    for i in {1..10}; do
+                    for i in {1..20}; do
                         if curl -sf http://localhost:8089/actuator/health > /dev/null; then
                             echo "Tea-service is UP"
                             exit 0
                         fi
                         echo "Waiting..."
-                        sleep 3
+                        sleep 5
                     done
                     echo "Tea-service did not start"
                     exit 1

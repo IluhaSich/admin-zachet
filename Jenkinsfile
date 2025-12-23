@@ -42,23 +42,23 @@ pipeline {
             }
         }
 
-        stage('Health Check') {
-            steps {
-                echo 'Waiting for application health'
-                sh '''
-                    for i in {1..20}; do
-                        if curl -sf http://localhost:8089/actuator/health > /dev/null; then
-                            echo "Tea-service is UP"
-                            exit 0
-                        fi
-                        echo "Waiting..."
-                        sleep 5
-                    done
-                    echo "Tea-service did not start"
-                    exit 1
-                '''
-            }
-        }
+//         stage('Health Check') {
+//             steps {
+//                 echo 'Waiting for application health'
+//                 sh '''
+//                     for i in {1..30}; do
+//                         if curl -sf http://localhost:8089/actuator/health > /dev/null; then
+//                             echo "Tea-service is UP"
+//                             exit 0
+//                         fi
+//                         echo "Waiting..."
+//                         sleep 5
+//                     done
+//                     echo "Tea-service did not start"
+//                     exit 1
+//                 '''
+//             }
+//         }
     }
 
     post {

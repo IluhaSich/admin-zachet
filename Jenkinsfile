@@ -23,12 +23,11 @@ pipeline {
             }
         }
 
-        stage('Stop Old Containers') {
+        stage('Clean Environment') {
             steps {
-                echo 'Stopping old containers'
+                echo 'Stopping containers and removing volumes'
                 sh '''
-                    ${COMPOSE_CMD} stop tea-service prometheus grafana || true
-                    ${COMPOSE_CMD} rm -f tea-service prometheus grafana || true
+                    ${COMPOSE_CMD} down -v || true
                 '''
             }
         }
@@ -37,28 +36,28 @@ pipeline {
             steps {
                 echo 'Starting services'
                 sh '''
-                    ${COMPOSE_CMD} up -d tea-service prometheus grafana
+                    ${COMPOSE_CMD} up -d
                 '''
             }
         }
 
-//         stage('Health Check') {
-//             steps {
-//                 echo 'Waiting for application health'
-//                 sh '''
-//                     for i in {1..30}; do
-//                         if curl -sf http://localhost:8089/actuator/health > /dev/null; then
-//                             echo "Tea-service is UP"
-//                             exit 0
-//                         fi
-//                         echo "Waiting..."
-//                         sleep 5
-//                     done
-//                     echo "Tea-service did not start"
-//                     exit 1
-//                 '''
-//             }
-//         }
+//        stage('Health Check') {
+//            steps {
+//                echo 'Waiting for application health'
+//                sh '''
+//                    for i in {1..30}; do
+//                        if curl -sf http://localhost:8089/actuator/health > /dev/null; then
+//                            echo "Tea-service is UP"
+//                            exit 0
+//                        fi
+//                        echo "Waiting..."
+//                        sleep 5
+//                    done
+//                    echo "Tea-service did not start"
+//                    exit 1
+//                '''
+//            }
+//        }
     }
 
     post {

@@ -58,21 +58,22 @@ services:
     restart: unless-stopped
 
   jenkins:
-    image: jenkins/jenkins:lts
+    build:
+      context: ./jenkins
+      dockerfile: Dockerfile
     container_name: jenkins
     ports:
-      - "8081:8080"
+      - "8080:8080"
       - "50000:50000"
-    environment:
-      - JENKINS_OPTS=--httpPort=8080
     volumes:
       - jenkins-data:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - .:/workspace
+    environment:
+      - JENKINS_OPTS=--httpPort=8080
+    user: root
     networks:
       - monitoring-network
-    user: root
-    restart: unless-stopped
+
 
 
 

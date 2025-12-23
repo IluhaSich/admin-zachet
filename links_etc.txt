@@ -1,6 +1,12 @@
 https://github.com/IluhaSich/admin-zachet
 
+
+http://localhost:8081/
 http://localhost:8089/swagger-ui/index.html
+http://localhost:8089/actuator/health
+http://localhost:8089/api/teas
+http://localhost:8089/actuator/prometheus
+http://localhost:9090/query?g0.expr=http_server_requests_seconds_count%7Bapplication%3D%22tea-service%22%7D%0A&g0.show_tree=0&g0.tab=table&g0.range_input=1h&g0.res_type=auto&g0.res_density=medium&g0.display_mode=lines&g0.show_exemplars=0
 
 /var/jenkins_home/secrets/initialAdminPassword
 

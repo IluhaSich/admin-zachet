@@ -21,17 +21,17 @@ services:
       start_period: 40s
 
   prometheus:
-    image: prom/prometheus:latest
+    build:
+      context: ./prometheus
+      dockerfile: Dockerfile
     container_name: prometheus
     ports:
       - "9090:9090"
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
-      - '--storage.tsdb.retention.time=200h'
     networks:
       - monitoring-network
     restart: unless-stopped
@@ -63,7 +63,7 @@ services:
       dockerfile: Dockerfile
     container_name: jenkins
     ports:
-      - "8080:8080"
+      - "8081:8080"
       - "50000:50000"
     volumes:
       - jenkins-data:/var/jenkins_home
